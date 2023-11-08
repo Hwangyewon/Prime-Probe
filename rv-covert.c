@@ -22,9 +22,7 @@
 // Intrinsic CLFLUSH for FLUSH+RELOAD attack
 //#define CLFLUSH(address) _mm_clflush(address);
 
-//#define SAMPLES 75 // TODO: CONFIGURE THIS
-
-#define SAMPLES 39
+#define SAMPLES 75 // TODO: CONFIGURE THIS
 
 #define L1_CACHE_SIZE (16*1024)
 #define LINE_SIZE 64
@@ -194,8 +192,9 @@ char spy()
 
 int main()
 {
-    FILE *in, *out;
-    in = fopen("transmitted-secret.txt", "r");
+    FILE *out;
+    char secret[] = "The Magic Words are Squeamish Ossifrage.";
+    //in = fopen("transmitted-secret.txt", "r");
     out = fopen("received-secret.txt", "w");
 
     int j, k;
@@ -203,12 +202,12 @@ int main()
     int max_set;
 
     // TODO: CONFIGURE THIS -- currently, 32*assoc to force eviction out of L2
-    setup(trojan_array, ASSOCIATIVITY*32);
+    setup(trojan_array, ASSOCIATIVITY*64);
 
     setup(spy_array, ASSOCIATIVITY);
     
     for (;;) {
-        char msg = fgetc(in);
+        char msg = puts(secret);
         if (msg == EOF) {
             break;
         }
@@ -235,6 +234,6 @@ int main()
       //  fprintf(out, "%c", 32 + max_set);
         max_count = max_set = 0;
     }
-    fclose(in);
+   // fclose(in);
     fclose(out);
 }
